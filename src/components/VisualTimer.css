@@ -1,0 +1,348 @@
+/* VisualTimer.css — Sleek, dynamic recording session timer */
+
+/* Overlay Variant (Over the video preview) */
+.visual-timer-overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: rgba(10, 12, 18, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.2);
+  transition: all var(--transition);
+  user-select: none;
+}
+
+.visual-timer-overlay.is-recording {
+  border-color: rgba(248, 113, 113, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(248, 113, 113, 0.15);
+}
+
+.visual-timer-overlay.is-paused {
+  border-color: rgba(251, 191, 36, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(251, 191, 36, 0.15);
+}
+
+/* Status Indicator Dot & Label */
+.timer-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.timer-status-pill.recording {
+  color: var(--danger);
+}
+
+.timer-status-pill.paused {
+  color: var(--warning);
+}
+
+.timer-pulse-beacon {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.is-recording .timer-pulse-beacon::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+  animation: timer-beacon-ripple 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes timer-beacon-ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.is-paused .timer-pulse-beacon {
+  animation: timer-pause-blink 1s ease-in-out infinite alternate;
+}
+
+@keyframes timer-pause-blink {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+/* Numeric Timer Display */
+.timer-digits-display {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-separator {
+  color: var(--text-muted);
+  margin: 0 1px;
+  animation: timer-colon-pulse 1s step-start infinite;
+}
+
+.is-paused .timer-separator {
+  animation: none;
+  opacity: 0.4;
+}
+
+@keyframes timer-colon-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Dynamic Live Audio/Video Activity Equalizer Bars */
+.timer-waveform-bars {
+  display: flex;
+  align-items: center;
+  gap: 2.5px;
+  height: 14px;
+  padding-left: 2px;
+}
+
+.timer-bar {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--danger);
+  transform-origin: bottom;
+  transform: scaleY(0.2);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.is-recording .timer-bar {
+  animation: timer-bar-bounce 1.2s ease-in-out infinite alternate;
+}
+
+.timer-bar:nth-child(1) { animation-delay: 0.1s; height: 10px; }
+.timer-bar:nth-child(2) { animation-delay: 0.3s; height: 14px; }
+.timer-bar:nth-child(3) { animation-delay: 0.5s; height: 11px; }
+.timer-bar:nth-child(4) { animation-delay: 0.2s; height: 15px; }
+
+.is-paused .timer-bar {
+  animation: none;
+  background: var(--warning);
+  transform: scaleY(0.25) !important;
+  opacity: 0.6;
+}
+
+@keyframes timer-bar-bounce {
+  0% { transform: scaleY(0.2); }
+  50% { transform: scaleY(0.9); }
+  100% { transform: scaleY(0.4); }
+}
+
+/* Panel / Card Variant (Full Visual Dashboard Component) */
+.visual-timer-panel {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.visual-timer-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--danger), transparent);
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+
+.visual-timer-panel.is-paused::before {
+  background: linear-gradient(90deg, transparent, var(--warning), transparent);
+}
+
+.timer-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.timer-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timer-session-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.timer-session-badge.recording {
+  background: var(--danger-bg);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: var(--danger);
+}
+
+.timer-session-badge.paused {
+  background: var(--warning-bg);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: var(--warning);
+}
+
+.timer-session-badge.completed {
+  background: var(--success-bg);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: var(--success);
+}
+
+.timer-meta-tags {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.timer-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.timer-meta-item svg {
+  color: var(--accent);
+}
+
+/* Time Clock Readout Segments */
+.timer-clock-segments {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.timer-segment-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  min-width: 68px;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.timer-segment-value {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-segment-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.timer-segment-colon {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding-bottom: 12px;
+  user-select: none;
+}
+
+.is-recording .timer-segment-colon {
+  animation: timer-colon-pulse 1s step-start infinite;
+}
+
+/* Dynamic Progress Bar (Seconds of Current Minute) */
+.timer-progress-track {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.timer-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--danger) 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease-out;
+}
+
+.is-paused .timer-progress-fill {
+  background: var(--warning);
+}
+
+/* Sub-info Row in Panel */
+.timer-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding-top: 4px;
+}
+
+.timer-live-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timer-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+}

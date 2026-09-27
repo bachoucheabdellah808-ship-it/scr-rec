@@ -1,0 +1,8 @@
+{
+  "name": "Screen Recorder",
+  "description": "Record your screen, window, or browser tab entirely locally. Free, private screen recorder with instant WebM & MP4 download.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ],
+  "permissions": []
+}
